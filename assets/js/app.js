@@ -49,27 +49,31 @@ $("#login-btn").click(function() {
   return false;
 });
 
-
+//ejecuta funcion para mostrar el sidebar al hacer clic en boton poi del sidebar
 $("#list-btn").click(function() {
   animateSidebar();
   return false;
 });
 
+//muestra elementos del navbar para tamaños de pantalla pequeños al hacer clic en el boton (3 barritas)
 $("#nav-btn").click(function() {
   $(".navbar-collapse").collapse("toggle");
   return false;
 });
 
+//muestra el sidebar al hacer clic en el icono de lupa (en caso de pantallas pequeñas)
 $("#sidebar-toggle-btn").click(function() {
   animateSidebar();
   return false;
 });
 
+//esconde el sidebar al hacer clic en el boton al lado del titulo del sidebar
 $("#sidebar-hide-btn").click(function() {
   animateSidebar();
   return false;
 });
 
+//funcion que desplega el sidebar
 function animateSidebar() {
   $("#sidebar").animate({
     width: "toggle"
@@ -78,14 +82,17 @@ function animateSidebar() {
   });
 }
 
+//funcion que pone el scroll al layer control al disminuir el tamaño de la ventana
 function sizeLayerControl() {
   $(".leaflet-control-layers").css("max-height", $("#map").height() - 50);
 }
 
+//Funcion que quita la iluminacion de los elementos
 function clearHighlight() {
   highlight.clearLayers();
 }
 
+//
 function sidebarClick(id) {
   var layer = markerClusters.getLayer(id);
   map.setView([layer.getLatLng().lat, layer.getLatLng().lng], 17);
