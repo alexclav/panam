@@ -1,49 +1,54 @@
-var map, featureList, boroughSearch = [], theaterSearch = [], museumSearch = [];
+var map, featureList, barrioSearch = [], deportivoSearch = [], hotelSearch = [];
 
-
+//ejecuta función de scroll del layer control cuando se cambia el tamaño de la ventana
 $(window).resize(function() {
   sizeLayerControl();
 });
 
-
+//muestra el modal del feauture y hace zoom al hacer clic en elemento del sidebar
 $(document).on("click", ".feature-row", function(e) {
   $(document).off("mouseout", ".feature-row", clearHighlight);
   sidebarClick(parseInt($(this).attr("id"), 10));
 });
 
-
-
+//ilumina el feature al hacer hover sobre el elementos en el sidebar
 if ( !("ontouchstart" in window) ) {
   $(document).on("mouseover", ".feature-row", function(e) {
     highlight.clearLayers().addLayer(L.circleMarker([$(this).attr("lat"), $(this).attr("lng")], highlightStyle));
   });
 }
 
+//quita la iluminacion del feature al quitar el puntero
 $(document).on("mouseout", ".feature-row", clearHighlight);
 
+//Lanza el modal del About al hacer clic en el elemento del navbar
 $("#about-btn").click(function() {
   $("#aboutModal").modal("show");
   $(".navbar-collapse.in").collapse("hide");
   return false;
 });
 
+//Muestra la extension completa de los elementos del mapa
 $("#full-extent-btn").click(function() {
   map.fitBounds(boroughs.getBounds());
   $(".navbar-collapse.in").collapse("hide");
   return false;
 });
 
+//Lanza el modal de la leyenda con boton del navbar
 $("#legend-btn").click(function() {
   $("#legendModal").modal("show");
   $(".navbar-collapse.in").collapse("hide");
   return false;
 });
 
+//lanza el modal del login con boton del navbar
 $("#login-btn").click(function() {
   $("#loginModal").modal("show");
   $(".navbar-collapse.in").collapse("hide");
   return false;
 });
+
 
 $("#list-btn").click(function() {
   animateSidebar();
@@ -156,7 +161,7 @@ var boroughs = L.geoJson(null, {
     };
   },
   onEachFeature: function (feature, layer) {
-    boroughSearch.push({
+    barrioSearch.push({
       name: layer.feature.properties.barrio,
       source: "Boroughs",
       id: L.stamp(layer),
@@ -253,7 +258,7 @@ var theaters = L.geoJson(null, {
         }
       });
       $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/mascota.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
-      theaterSearch.push({
+      deportivoSearch.push({
         name: layer.feature.properties.name,
         address: layer.feature.properties.direccion,
         source: "Theaters",
@@ -296,7 +301,7 @@ var museums = L.geoJson(null, {
         }
       });
       $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/hotel.png"></td><td class="feature-name">' + layer.feature.properties.Hotel + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
-      museumSearch.push({
+      hotelSearch.push({
         name: layer.feature.properties.Hotel,
         address: layer.feature.properties.Direccion,
         source: "Museums",
@@ -469,7 +474,7 @@ $(document).one("ajaxStop", function () {
       return Bloodhound.tokenizers.whitespace(d.name);
     },
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    local: boroughSearch,
+    local: barrioSearch,
     limit: 10
   });
 
@@ -479,7 +484,7 @@ $(document).one("ajaxStop", function () {
       return Bloodhound.tokenizers.whitespace(d.name);
     },
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    local: theaterSearch,
+    local: deportivoSearch,
     limit: 10
   });
 
@@ -489,7 +494,7 @@ $(document).one("ajaxStop", function () {
       return Bloodhound.tokenizers.whitespace(d.name);
     },
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    local: museumSearch,
+    local: hotelSearch,
     limit: 10
   });
 
