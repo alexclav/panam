@@ -1,0 +1,21 @@
+{
+"type": "FeatureCollection",
+"name": "centros",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "name": "CANCHAS PANAMERICANAS", "direccion": "Calle 9 No 37-00", "x": -76.5381341, "y": 3.4225472, "num": 1 }, "geometry": { "type": "Point", "coordinates": [ -76.5381341, 3.422547199999988, 0.0 ] } },
+{ "type": "Feature", "properties": { "name": "CLUB CAMPESTRE DE CALI", "direccion": "Calle 5 Carrera 100", "x": -76.5423542, "y": 3.3691521, "num": 2 }, "geometry": { "type": "Point", "coordinates": [ -76.5423542, 3.3691521, 0.0 ] } },
+{ "type": "Feature", "properties": { "name": "CLUB DEPORTIVO LA CVC BERNARDO TOBAR", "direccion": "Carrera 168 No 20 - 1", "x": -76.5337561, "y": 3.3054152, "num": 3 }, "geometry": { "type": "Point", "coordinates": [ -76.5337561, 3.30541520000001, 0.0 ] } },
+{ "type": "Feature", "properties": { "name": "COLISEO DE BOLO", "direccion": "Carrera 52 No 2-3", "x": -76.5500685, "y": 3.4141802, "num": 4 }, "geometry": { "type": "Point", "coordinates": [ -76.5500685, 3.414180199999985, 0.0 ] } },
+{ "type": "Feature", "properties": { "name": "COLISEO DE HOCKEY MIGUEL CALERO", "direccion": "Calle 9 No 37-00", "x": -76.5381506, "y": 3.4220159, "num": 5 }, "geometry": { "type": "Point", "coordinates": [ -76.5381506, 3.4220159, 0.0 ] } },
+{ "type": "Feature", "properties": { "name": "COLISEO EL PUEBLO", "direccion": "Carrera 52 entre Calles 2 y 3", "x": -76.5518404, "y": 3.4134079, "num": 6 }, "geometry": { "type": "Point", "coordinates": [ -76.551840400000017, 3.4134079, 0.0 ] } },
+{ "type": "Feature", "properties": { "name": "COLISEO EVANGELISTA MORA", "direccion": "Carrera 34 Diagonal 31-50", "x": -76.5401044, "y": 3.4286274, "num": 7 }, "geometry": { "type": "Point", "coordinates": [ -76.5401044, 3.428627400000028, 0.0 ] } },
+{ "type": "Feature", "properties": { "name": "COLISEO IVÁN VASSILEV TODOROV", "direccion": "Calle 9b No 32a-21", "x": -76.5359908, "y": 3.4259036, "num": 8 }, "geometry": { "type": "Point", "coordinates": [ -76.5359908, 3.4259036, 0.0 ] } },
+{ "type": "Feature", "properties": { "name": "ESTADIO PASCUAL GUERRERO", "direccion": "Calle 5B Bis entre Cra 34 y 36", "x": -76.5412366, "y": 3.4299548, "num": 9 }, "geometry": { "type": "Point", "coordinates": [ -76.5412366, 3.429954799999986, 0.0 ] } },
+{ "type": "Feature", "properties": { "name": "PATINÓDROMO MUNDIALISTA", "direccion": "Calle 3 No 52-46", "x": -76.5504099, "y": 3.4124003, "num": 10 }, "geometry": { "type": "Point", "coordinates": [ -76.5504099, 3.4124003, 0.0 ] } },
+{ "type": "Feature", "properties": { "name": "PISCINAS HERNANDO BOTERO O´BYRNE", "direccion": "Calle 9 No 34-03", "x": -76.5378957, "y": 3.4236556, "num": 11 }, "geometry": { "type": "Point", "coordinates": [ -76.5378957, 3.423655599999971, 0.0 ] } },
+{ "type": "Feature", "properties": { "name": "SKATE PARK CALIDA", "direccion": "Carrera 52 entre Calles 2 y 3", "x": -76.5525365, "y": 3.4147709, "num": 12 }, "geometry": { "type": "Point", "coordinates": [ -76.552536499999988, 3.414770900000019, 0.0 ] } },
+{ "type": "Feature", "properties": { "name": "VELÓDROMO ALCIDES NIETO PATIÑO", "direccion": "Carrera 54 Oeste No 3-50", "x": -76.5509718, "y": 3.4114809, "num": 13 }, "geometry": { "type": "Point", "coordinates": [ -76.550971800000013, 3.411480899999986, 0.0 ] } },
+{ "type": "Feature", "properties": { "name": "ESTADIO DE ATLETISMO PEDRO GRAJALES", "direccion": "CL 9 34 00", "x": -76.5369919, "y": 3.425161865, "num": 14 }, "geometry": { "type": "Point", "coordinates": [ -76.536991972908126, 3.425161865594336, 0.0 ] } }
+]
+}
