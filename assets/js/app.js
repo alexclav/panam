@@ -424,19 +424,21 @@ $("#searchbox").keypress(function (e) {
   }
 });
 
+//cuando el modeal del feature se oculta, al sacar el puntero del elemento, se debe quitar la iluminacion
 $("#featureModal").on("hidden.bs.modal", function (e) {
   $(document).on("mouseout", ".feature-row", clearHighlight);
 });
 
-/* Typeahead search functionality */
+/*Busqueda predictiva  (Typeahead) */
 $(document).one("ajaxStop", function () {
   $("#loading").hide();
   sizeLayerControl();
-  /* Fit map to boroughs bounds */
+  //cuando el mapa carga se debe hacer zoom a toda la extension de los elementos
   map.fitBounds(barrios.getBounds());
   featureList = new List("features", {valueNames: ["feature-name"]});
   featureList.sort("feature-name", {order:"asc"});
 
+  //crea el "sabueso" (bloodhound) para la capa de barrios, toqueniza los nombres
   var barriosBH = new Bloodhound({
     name: "Barrios",
     datumTokenizer: function (d) {
@@ -446,7 +448,7 @@ $(document).one("ajaxStop", function () {
     local: barrioSearch,
     limit: 10
   });
-
+  //crea el bloodhound para capa escenarios deportivos
   var deportesBH = new Bloodhound({
     name: "Escenarios",
     datumTokenizer: function (d) {
@@ -456,7 +458,7 @@ $(document).one("ajaxStop", function () {
     local: deportivoSearch,
     limit: 10
   });
-
+  //crea el bloodhound para capa hoteles
   var hotelesBH = new Bloodhound({
     name: "Hoteles",
     datumTokenizer: function (d) {
@@ -466,7 +468,7 @@ $(document).one("ajaxStop", function () {
     local: hotelSearch,
     limit: 10
   });
-
+  //crea el bloodhound para un api geocoder 
   var geonamesBH = new Bloodhound({
     name: "GeoNames",
     datumTokenizer: function (d) {
@@ -497,12 +499,13 @@ $(document).one("ajaxStop", function () {
     },
     limit: 10
   });
+  //se inician los bloodhounds
   barriosBH.initialize();
   deportesBH.initialize();
   hotelesBH.initialize();
   geonamesBH.initialize();
 
-  /* instantiate the typeahead UI */
+  /* Se instancia el predictor en la caja de búsqueda */
   $("#searchbox").typeahead({
     minLength: 3,
     highlight: true,
@@ -576,7 +579,7 @@ $(document).one("ajaxStop", function () {
   $(".twitter-typeahead").css("display", "block");
 });
 
-// Leaflet patch to make layer control scrollable on touch browsers
+//Scroll en layer control para navagadores tactiles
 var container = $(".leaflet-control-layers")[0];
 if (!L.Browser.touch) {
   L.DomEvent
