@@ -5,7 +5,7 @@ $(window).resize(function() {
   sizeLayerControl();
 });
 
-//muestra el modal del feauture y hace zoom al hacer clic en elemento del sidebar
+//muestra el modal del feauture y hace zoom al hacer clic en elemento del sidebar (a traves de la funcion sidebarclick)
 $(document).on("click", ".feature-row", function(e) {
   $(document).off("mouseout", ".feature-row", clearHighlight);
   sidebarClick(parseInt($(this).attr("id"), 10));
@@ -92,7 +92,7 @@ function clearHighlight() {
   highlight.clearLayers();
 }
 
-//
+//acerca al feauture al hacer clic en elemento del sidebar, emula clic en el elemento sobre el mapa
 function sidebarClick(id) {
   var layer = markerClusters.getLayer(id);
   map.setView([layer.getLatLng().lat, layer.getLatLng().lng], 17);
@@ -104,10 +104,11 @@ function sidebarClick(id) {
   }
 }
 
+//funcion que controla el comportamiento de los elementos en el sidebar
 function syncSidebar() {
-  /* Empty sidebar features */
+  /* Vacía los elementos del sidebar */
   $("#feature-list tbody").empty();
-  /* Loop through theaters layer and add only features which are in the map bounds */
+  /* Recorre la capa de escenarios deportivos y añade elementos que son visibles en el mapa */
   deportes.eachLayer(function (layer) {
     if (map.hasLayer(deportesLayer)) {
       if (map.getBounds().contains(layer.getLatLng())) {
@@ -115,7 +116,7 @@ function syncSidebar() {
       }
     }
   });
-  /* Loop through museums layer and add only features which are in the map bounds */
+  /* Recorre la capa de escenarios hoteles y añade elementos que son visibles en el mapa */
   hoteles.eachLayer(function (layer) {
     if (map.hasLayer(hotelesLayer)) {
       if (map.getBounds().contains(layer.getLatLng())) {
@@ -123,7 +124,7 @@ function syncSidebar() {
       }
     }
   });
-  /* Update list.js featureList */
+  /* Actualiza la lista de elementos del sidebar y los ordena ascendentemente */
   featureList = new List("features", {
     valueNames: ["feature-name"]
   });
@@ -132,7 +133,7 @@ function syncSidebar() {
   });
 }
 
-/* Basemap Layers */
+/* Capas de mapas base */
 var cartoLight = L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png", {
   maxZoom: 19,
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>'
@@ -148,7 +149,7 @@ var usgsImagery = L.layerGroup([L.tileLayer("http://basemap.nationalmap.gov/arcg
   attribution: "Aerial Imagery courtesy USGS"
 })]);
 
-/* Overlay Layers */
+/* Capa de iluminacion de elemento (circulo color cyan) */
 var highlight = L.geoJson(null);
 var highlightStyle = {
   stroke: false,
@@ -157,6 +158,7 @@ var highlightStyle = {
   radius: 10
 };
 
+//capa de barrios desde geojson
 var barrios = L.geoJson(null, {
   style: function (feature) {
     return {
@@ -167,6 +169,7 @@ var barrios = L.geoJson(null, {
       clickable: false
     };
   },
+  //llena array para busqueda de barrios
   onEachFeature: function (feature, layer) {
     barrioSearch.push({
       name: layer.feature.properties.barrio,
@@ -181,7 +184,7 @@ $.getJSON("data/barrios.geojson", function (data) {
 });
 
 
-/* Single marker cluster layer to hold all clusters */
+/* Marcador de Cluster que contiene todos los cluster */
 var markerClusters = new L.MarkerClusterGroup({
   spiderfyOnMaxZoom: true,
   showCoverageOnHover: false,
@@ -189,8 +192,9 @@ var markerClusters = new L.MarkerClusterGroup({
   disableClusteringAtZoom: 16
 });
 
-/* Empty layer placeholder to add to layer control for listening when to add/remove theaters to markerClusters layer */
+/* capa vacia para añadir o quitar escenarios si están/no están en la capa de clusters */
 var deportesLayer = L.geoJson(null);
+//capa de escenarios deportivos
 var deportes = L.geoJson(null, {
   pointToLayer: function (feature, latlng) {
     return L.marker(latlng, {
@@ -204,6 +208,7 @@ var deportes = L.geoJson(null, {
       riseOnHover: true
     });
   },
+  //crea la tabla para el modal del elemento y define que se muestra si se le hace clic. Tambien añade los datos para el array de busqueda
   onEachFeature: function (feature, layer) {
     if (feature.properties) {
       var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Escenario Deportivo</th><td>" + feature.properties.name + "</td></tr>" + "<tr><th>Dirección</th><td>" + feature.properties.direccion + "</td></tr>" + "<table>";
@@ -228,11 +233,10 @@ var deportes = L.geoJson(null, {
   }
 });
 $.getJSON("data/centros.geojson", function (data) {
-  deportes.addData(data);
-  // map.addLayer(theaterLayer);
+  deportes.addData(data);  
 });
 
-/* Empty layer placeholder to add to layer control for listening when to add/remove museums to markerClusters layer */
+/* capa vacia para añadir o quitar hoteles si están/no están en la capa de clusters */
 var hotelesLayer = L.geoJson(null);
 var hoteles = L.geoJson(null, {
   pointToLayer: function (feature, latlng) {
@@ -247,6 +251,7 @@ var hoteles = L.geoJson(null, {
       riseOnHover: true
     });
   },
+  //crea la tabla para el modal del elemento y define que se muestra si se le hace clic. Tambien añade los datos para el array de busqueda
   onEachFeature: function (feature, layer) {
     if (feature.properties) {
       var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Hotel</th><td>" + feature.properties.Hotel + "</td></tr>" + "<tr><th>Dirección</th><td>" + feature.properties.Direccion + "</td></tr>" + "<tr><th>Zona</th><td>" + feature.properties.Zona + "</td></tr>" + "<table>";
@@ -272,9 +277,12 @@ var hoteles = L.geoJson(null, {
 });
 $.getJSON("data/hoteles.geojson", function (data) {
   hoteles.addData(data);
+  //se añade predeterminadamente al mapa
   map.addLayer(hotelesLayer);
 });
 
+
+//definicion del mapa
 map = L.map("map", {
   zoom: 12,
   center: [3.4114696,-76.5233574],
@@ -283,7 +291,7 @@ map = L.map("map", {
   attributionControl: false
 });
 
-/* Layer control listeners that allow for a single markerClusters layer */
+/* Controla la capa de clusters segun las capas que estén activas */
 map.on("overlayadd", function(e) {
   if (e.layer === deportesLayer) {
     markerClusters.addLayer(deportes);
@@ -306,17 +314,17 @@ map.on("overlayremove", function(e) {
   }
 });
 
-/* Filter sidebar feature list to only show features in current map bounds */
+/* filtra los elementos del sidebar para solo mostrar los visibles en el mapa */
 map.on("moveend", function (e) {
   syncSidebar();
 });
 
-/* Clear feature highlight when map is clicked */
+/* quita la iluminacion de un elemento haciendo clic en el mapa */
 map.on("click", function(e) {
   highlight.clearLayers();
 });
 
-/* Attribution control */
+/* Control de atribución a autores de mapas base  */
 function updateAttribution(e) {
   $.each(map._layers, function(index, layer) {
     if (layer.getAttribution) {
@@ -337,11 +345,12 @@ attributionControl.onAdd = function (map) {
 };
 map.addControl(attributionControl);
 
+//botones de control del zoom
 var zoomControl = L.control.zoom({
   position: "bottomright"
 }).addTo(map);
 
-/* GPS enabled geolocation control set to follow the user's location */
+/* Ubicación del usuario*/
 var locateControl = L.control.locate({
   position: "bottomright",
   drawCircle: true,
@@ -373,39 +382,42 @@ var locateControl = L.control.locate({
   }
 }).addTo(map);
 
-/* Larger screens get expanded layer control and visible sidebar */
+/* En pantallas grandes, el sidebar y el layer control están visibles */
 if (document.body.clientWidth <= 767) {
   var isCollapsed = true;
 } else {
   var isCollapsed = false;
 }
 
+//agrupacion de mapas base
 var baseLayers = {
   "Street Map": cartoLight,
   "Aerial Imagery": usgsImagery
 };
 
+//Agrupación de capas tipo punto
 var groupedOverlays = {
   "Puntos de Interés": {
     "<img src='assets/img/hotel.png' width='24' height='28'>&nbsp;Hoteles": hotelesLayer,
     "<img src='assets/img/mascota.png' width='24' height='28'>&nbsp;Escenarios": deportesLayer
-    
+//capas de referencia (barrios)
   },
   "Reference": {
     "Barrios": barrios    
   }
 };
 
+//crea el control layer y lo agrega al mapa
 var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, {
   collapsed: isCollapsed
 }).addTo(map);
 
-/* Highlight search box text on click */
+/* Ilumina la caja de búsqueda al hacerle clic */
 $("#searchbox").click(function () {
   $(this).select();
 });
 
-/* Prevent hitting enter from refreshing the page */
+/* Inhabilita que la pagina se refresque al presionar ENTER en la caja de busqueda */
 $("#searchbox").keypress(function (e) {
   if (e.which == 13) {
     e.preventDefault();
