@@ -11,11 +11,11 @@
 // };
 
 function conexion(){
-	$serverName = "DESKTOP-O9KTC74";
+	$serverName = "LAPTOP-MOEV0SMB";
 	$connectionInfo = array(
 	    "UID" => "",
 	    "PWD" => "",
-	    "Database" => "pruebas"
+	    "Database" => "Panam"
 	);
 	$conn = sqlsrv_connect($serverName, $connectionInfo);
 	if ($conn === false) {		
