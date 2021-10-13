@@ -1,4 +1,4 @@
-var map, featureList, barrioSearch = [], deportivoSearch = [], hotelSearch = [];
+var map, featureList, barrioSearch = [], deportivoSearch = [], turismoSearch = [], hotelSearch = [];
 
 //ejecuta función de scroll del layer control cuando se cambia el tamaño de la ventana
 $(window).resize(function() {
@@ -116,11 +116,19 @@ function syncSidebar() {
       }
     }
   });
-  /* Recorre la capa de escenarios hoteles y añade elementos que son visibles en el mapa */
+  /* Recorre la capa de  hoteles y añade elementos que son visibles en el mapa */
   hoteles.eachLayer(function (layer) {
     if (map.hasLayer(hotelesLayer)) {
       if (map.getBounds().contains(layer.getLatLng())) {
         $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/hotel.png"></td><td class="feature-name">' + layer.feature.properties.Hotel + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      }
+    }
+  });
+  /* Recorre la capa de turismo y añade elementos que son visibles en el mapa */
+  turismo.eachLayer(function (layer) {
+    if (map.hasLayer(turismoLayer)) {
+      if (map.getBounds().contains(layer.getLatLng())) {
+        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/sitio.png"></td><td class="feature-name">' + layer.feature.properties.NOMBRE + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       }
     }
   });
@@ -281,6 +289,48 @@ $.getJSON("data/hoteles.geojson", function (data) {
   map.addLayer(hotelesLayer);
 });
 
+/* capa vacia para añadir o quitar hoteles si están/no están en la capa de clusters */
+var turismoLayer = L.geoJson(null);
+var turismo = L.geoJson(null, {
+  pointToLayer: function (feature, latlng) {
+    return L.marker(latlng, {
+      icon: L.icon({
+        iconUrl: "assets/img/sitio.png",
+        iconSize: [24, 28],
+        iconAnchor: [12, 28],
+        popupAnchor: [0, -25]
+      }),
+      title: feature.properties.NOMBRE,
+      riseOnHover: true
+    });
+  },
+  //crea la tabla para el modal del elemento y define que se muestra si se le hace clic. Tambien añade los datos para el array de busqueda
+  onEachFeature: function (feature, layer) {
+    if (feature.properties) {
+      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Sitio Turístico</th><td>" + feature.properties.NOMBRE + "</td></tr>" + "<table>";
+      layer.on({
+        click: function (e) {
+          $("#feature-title").html(feature.properties.NOMBRE);
+          $("#feature-info").html(content);
+          $("#featureModal").modal("show");
+          highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
+        }
+      });
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/sitio.png"></td><td class="feature-name">' + layer.feature.properties.NOMBRE + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      turismoSearch.push({
+        name: layer.feature.properties.NOMBRE,       
+        source: "Turismo",
+        id: L.stamp(layer),
+        lat: layer.feature.geometry.coordinates[1],
+        lng: layer.feature.geometry.coordinates[0]
+      });
+    }
+  }
+});
+$.getJSON("data/turisticos.geojson", function (data) {
+  turismo.addData(data);
+
+});
 
 //definicion del mapa
 map = L.map("map", {
@@ -301,6 +351,10 @@ map.on("overlayadd", function(e) {
     markerClusters.addLayer(hoteles);
     syncSidebar();
   }
+  if (e.layer === turismoLayer) {
+    markerClusters.addLayer(turismo);
+    syncSidebar();
+  }
 });
 
 map.on("overlayremove", function(e) {
@@ -310,6 +364,10 @@ map.on("overlayremove", function(e) {
   }
   if (e.layer === hotelesLayer) {
     markerClusters.removeLayer(hoteles);
+    syncSidebar();
+  }
+  if (e.layer === turismoLayer) {
+    markerClusters.removeLayer(turismo);
     syncSidebar();
   }
 });
@@ -367,11 +425,11 @@ var locateControl = L.control.locate({
     clickable: false
   },
   icon: "fa fa-location-arrow",
-  metric: false,
+  metric: true,
   strings: {
-    title: "My location",
-    popup: "You are within {distance} {unit} from this point",
-    outsideMapBoundsMsg: "You seem located outside the boundaries of the map"
+    title: "Mi Ubicación",
+    popup: "Estás en un radio de {distance} metros de este punto",
+    outsideMapBoundsMsg: "Parece que estás por fuera de los límites del mapa"
   },
   locateOptions: {
     maxZoom: 18,
@@ -399,7 +457,8 @@ var baseLayers = {
 var groupedOverlays = {
   "Puntos de Interés": {
     "<img src='assets/img/hotel.png' width='24' height='28'>&nbsp;Hoteles": hotelesLayer,
-    "<img src='assets/img/mascota.png' width='24' height='28'>&nbsp;Escenarios": deportesLayer
+    "<img src='assets/img/mascota.png' width='24' height='28'>&nbsp;Escenarios": deportesLayer,
+    "<img src='assets/img/sitio.png' width='24' height='28'>&nbsp;Turismo": turismoLayer
 //capas de referencia (barrios)
   },
   "Reference": {
@@ -424,19 +483,21 @@ $("#searchbox").keypress(function (e) {
   }
 });
 
+//cuando el modeal del feature se oculta, al sacar el puntero del elemento, se debe quitar la iluminacion
 $("#featureModal").on("hidden.bs.modal", function (e) {
   $(document).on("mouseout", ".feature-row", clearHighlight);
 });
 
-/* Typeahead search functionality */
+/*Busqueda predictiva  (Typeahead) */
 $(document).one("ajaxStop", function () {
   $("#loading").hide();
   sizeLayerControl();
-  /* Fit map to boroughs bounds */
+  //cuando el mapa carga se debe hacer zoom a toda la extension de los elementos
   map.fitBounds(barrios.getBounds());
   featureList = new List("features", {valueNames: ["feature-name"]});
   featureList.sort("feature-name", {order:"asc"});
 
+  //crea el "sabueso" (bloodhound) para la capa de barrios, toqueniza los nombres
   var barriosBH = new Bloodhound({
     name: "Barrios",
     datumTokenizer: function (d) {
@@ -446,7 +507,7 @@ $(document).one("ajaxStop", function () {
     local: barrioSearch,
     limit: 10
   });
-
+  //crea el bloodhound para capa escenarios deportivos
   var deportesBH = new Bloodhound({
     name: "Escenarios",
     datumTokenizer: function (d) {
@@ -456,7 +517,7 @@ $(document).one("ajaxStop", function () {
     local: deportivoSearch,
     limit: 10
   });
-
+  //crea el bloodhound para capa hoteles
   var hotelesBH = new Bloodhound({
     name: "Hoteles",
     datumTokenizer: function (d) {
@@ -466,7 +527,17 @@ $(document).one("ajaxStop", function () {
     local: hotelSearch,
     limit: 10
   });
-
+  //crea el bloodhound para capa turismo
+  var turismoBH = new Bloodhound({
+    name: "Turismo",
+    datumTokenizer: function (d) {
+      return Bloodhound.tokenizers.whitespace(d.name);
+    },
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    local: turismoSearch,
+    limit: 10
+  });
+  //crea el bloodhound para un api geocoder 
   var geonamesBH = new Bloodhound({
     name: "GeoNames",
     datumTokenizer: function (d) {
@@ -497,12 +568,14 @@ $(document).one("ajaxStop", function () {
     },
     limit: 10
   });
+  //se inician los bloodhounds
   barriosBH.initialize();
   deportesBH.initialize();
   hotelesBH.initialize();
+  turismoBH.initialize();
   geonamesBH.initialize();
 
-  /* instantiate the typeahead UI */
+  /* Se instancia el predictor en la caja de búsqueda */
   $("#searchbox").typeahead({
     minLength: 3,
     highlight: true,
@@ -515,11 +588,19 @@ $(document).one("ajaxStop", function () {
       header: "<h4 class='typeahead-header'>Barrios</h4>"
     }
   }, {
+    name: "Turismo",
+    displayKey: "name",
+    source: turismoBH.ttAdapter(),
+    templates: {
+      header: "<h4 class='typeahead-header'><img src='assets/img/sitio.png' width='24' height='28'>&nbsp;Sitio Turístico</h4>",
+      suggestion: Handlebars.compile(["{{name}}<br>&nbsp"].join(""))
+    }
+  }, {
     name: "Escenarios",
     displayKey: "name",
     source: deportesBH.ttAdapter(),
     templates: {
-      header: "<h4 class='typeahead-header'><img src='assets/img/mascota.png' width='24' height='28'>&nbsp;Escenarios</h4>",
+      header: "<h4 class='typeahead-header'><img src='assets/img/mascota.png' width='24' height='28'>&nbsp;Escenario Deportivo</h4>",
       suggestion: Handlebars.compile(["{{name}}<br>&nbsp;<small>{{address}}</small>"].join(""))
     }
   }, {
@@ -559,6 +640,15 @@ $(document).one("ajaxStop", function () {
         map._layers[datum.id].fire("click");
       }
     }
+    if (datum.source === "Turismo") {
+      if (!map.hasLayer(turismoLayer)) {
+        map.addLayer(turismoLayer);
+      }
+      map.setView([datum.lat, datum.lng], 17);
+      if (map._layers[datum.id]) {
+        map._layers[datum.id].fire("click");
+      }
+    }
     if (datum.source === "GeoNames") {
       map.setView([datum.lat, datum.lng], 14);
     }
@@ -576,7 +666,7 @@ $(document).one("ajaxStop", function () {
   $(".twitter-typeahead").css("display", "block");
 });
 
-// Leaflet patch to make layer control scrollable on touch browsers
+//Scroll en layer control para navagadores tactiles
 var container = $(".leaflet-control-layers")[0];
 if (!L.Browser.touch) {
   L.DomEvent
