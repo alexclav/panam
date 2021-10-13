@@ -675,3 +675,87 @@ if (!L.Browser.touch) {
 } else {
   L.DomEvent.disableClickPropagation(container);
 }
+
+// graficos en la seccion de estadisticas
+$.ajax({	
+	url: "assets/php/consulta.php",
+  type: "get",
+  dataType: 'json',
+  contentType: "application/json; charset=utf-8", 	    		
+	success: function (data){		
+
+    var id = [];
+    var Huespedes = [];
+    var Positivos = [];
+    var Recuperados = [];
+    var Muestras = [];
+    
+    for (var i in data) {
+        id.push(data[i].id);
+        Huespedes.push(data[i].Huespedes);
+        Positivos.push(data[i].Positivos);
+        Recuperados.push(data[i].Recuperados);
+        Muestras.push(data[i].Muestras);
+    }    
+
+    var chartdata = {
+      labels: id,
+      datasets: [{
+          label: "Huespedes",
+          borderWidth: 2,
+          data: Huespedes,
+          borderColor: "black",
+          fill: false
+      },
+      {
+        label: "Muestras",
+        borderWidth: 2,
+        data: Muestras,
+        borderColor: "blue",
+        fill: false
+     },
+     {
+      label: "Positivos",
+      borderWidth: 2,
+      data: Positivos,
+      borderColor: "red",
+      fill: false
+     },
+     {
+      label: "Recuperados",
+      borderWidth: 2,
+      data: Recuperados,
+      borderColor: "green",
+      fill: false
+     }                
+    ]
+   };
+
+    var mostrar = $("#myChart");
+
+    var grafico = new Chart(mostrar, {
+        type: 'line',
+        data: chartdata,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        min: 0, 
+                        max:50
+                    }
+                }]
+            }
+        }
+    });
+
+
+
+    },
+    error: function(data) {
+    console.log(data);
+    } 
+
+  });
