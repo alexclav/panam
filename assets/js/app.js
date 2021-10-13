@@ -425,10 +425,10 @@ var locateControl = L.control.locate({
     clickable: false
   },
   icon: "fa fa-location-arrow",
-  metric: false,
+  metric: true,
   strings: {
     title: "Mi Ubicación",
-    popup: "Estás a  {distance} {unit} de este punto",
+    popup: "Estás en un radio de {distance} metros de este punto",
     outsideMapBoundsMsg: "Parece que estás por fuera de los límites del mapa"
   },
   locateOptions: {
