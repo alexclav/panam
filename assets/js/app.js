@@ -752,7 +752,7 @@ $.ajax({
     var mostrar = $("#myChart");
 
     var grafico = new Chart(mostrar, {
-        type: 'bar',
+        type: 'line',
         data: chartdata,
         options: {
             responsive: true,
