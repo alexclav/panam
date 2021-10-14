@@ -702,47 +702,75 @@ $.ajax({
   contentType: "application/json; charset=utf-8", 	    		
 	success: function (data){		
 
-    var id = [];
+    var hotel = [];
     var Huespedes = [];
     var Positivos = [];
     var Recuperados = [];
     var Muestras = [];
     
     for (var i in data) {
-        id.push(data[i].id);
+        hotel.push(data[i].hotel);
         Huespedes.push(data[i].Huespedes);
         Positivos.push(data[i].Positivos);
         Recuperados.push(data[i].Recuperados);
         Muestras.push(data[i].Muestras);
     }    
 
+    // ordenar los datos de mayor a menor casos positivos
+    const arrayOfObj = hotel.map(function (d, i) {
+      return {
+        label: d,
+        data: Positivos[i] || 0,
+      }
+    })
+    const sortedArrayOfObj = arrayOfObj.sort(function (a, b) {
+      return b.data - a.data
+    })
+    let newArrayLabel = []
+    let newPositivos= []
+    let newHuespedes= []
+    let newRecuperados= []
+    let newMuestras= []
+    sortedArrayOfObj.forEach(function (d) {
+      newArrayLabel.push(d.label)
+      newPositivos.push(d.data)
+    })   
+    for (var j in newArrayLabel) {
+       indexH=hotel.indexOf(newArrayLabel[j])
+      newHuespedes.splice(j, 0, Huespedes[indexH]);
+      newMuestras.splice(j, 0, Muestras[indexH]);
+      newRecuperados.splice(j, 0, Recuperados[indexH]);
+    }
+
+     // libreria chart
     var chartdata = {
-      labels: id,
-      datasets: [{
-          label: "Huespedes",
+      labels: newArrayLabel,
+      datasets: [
+      {
+          label: "Positivos",
           borderWidth: 2,
-          data: Huespedes,
+          data: newPositivos,
+          borderColor: "red",
+          fill: false
+      },        
+      {
+          label: "Acreditados",
+          borderWidth: 2,
+          data: newHuespedes,
           borderColor: "black",
           fill: false
       },
       {
-        label: "Muestras",
+        label: "Pruebas",
         borderWidth: 2,
-        data: Muestras,
+        data: newMuestras,
         borderColor: "blue",
         fill: false
      },
      {
-      label: "Positivos",
-      borderWidth: 2,
-      data: Positivos,
-      borderColor: "red",
-      fill: false
-     },
-     {
       label: "Recuperados",
       borderWidth: 2,
-      data: Recuperados,
+      data: newRecuperados,
       borderColor: "green",
       fill: false
      }                
@@ -752,10 +780,16 @@ $.ajax({
     var mostrar = $("#myChart");
 
     var grafico = new Chart(mostrar, {
-        type: 'bar',
+        type: 'horizontalBar',
         data: chartdata,
         options: {
+            indexAxis: 'y',
             responsive: true,
+            plugins: {
+              legend: {
+                position: 'right',
+              }
+            },
             maintainAspectRatio: false,
             scales: {
                 yAxes: [{
