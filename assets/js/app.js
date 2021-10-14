@@ -248,9 +248,14 @@ $.getJSON("data/centros.geojson", function (data) {
 var hotelesLayer = L.geoJson(null);
 var hoteles = L.geoJson(null, {
   pointToLayer: function (feature, latlng) {
+    if (feature.properties.Positivos==0) {
+      var hotelIcon="assets/img/hotel.png"
+    }else{
+      var hotelIcon="assets/img/covid.png"
+    };
     return L.marker(latlng, {
       icon: L.icon({
-        iconUrl: "assets/img/hotel.png",
+        iconUrl: hotelIcon,
         iconSize: [24, 28],
         iconAnchor: [12, 28],
         popupAnchor: [0, -25]
@@ -262,7 +267,7 @@ var hoteles = L.geoJson(null, {
   //crea la tabla para el modal del elemento y define que se muestra si se le hace clic. Tambien añade los datos para el array de busqueda
   onEachFeature: function (feature, layer) {
     if (feature.properties) {
-      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Hotel</th><td>" + feature.properties.Hotel + "</td></tr>" + "<tr><th>Dirección</th><td>" + feature.properties.Direccion + "</td></tr>" + "<tr><th>Zona</th><td>" + feature.properties.Zona + "</td></tr>" + "<table>";
+      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Hotel</th><td>" + feature.properties.Hotel + "</td></tr>" + "<tr><th>Dirección</th><td>" + feature.properties.Direccion + "</td></tr>" + "<tr><th>Zona</th><td>" + feature.properties.Zona + "</td></tr>" + "<tr><th>Huespedes</th><td>" + feature.properties.Huespedes + "<tr><th>Pruebas</th><td>" + feature.properties.Muestras + "<tr><th>Casos Positivos</th><td>" + feature.properties.Positivos + "<tr><th>Recuperados</th><td>" + feature.properties.Recuperados + "<table>";
       layer.on({
         click: function (e) {
           $("#feature-title").html(feature.properties.Hotel);
@@ -283,11 +288,25 @@ var hoteles = L.geoJson(null, {
     }
   }
 });
-$.getJSON("data/hoteles.geojson", function (data) {
-  hoteles.addData(data);
-  //se añade predeterminadamente al mapa
-  map.addLayer(hotelesLayer);
+
+$.ajax({  
+  url: "assets/php/hoteles.php",
+  type: "get",          
+  dataType: 'json',
+  contentType: "application/json; charset=utf-8",
+  success: function (data){ 
+    console.log(data); 
+    hoteles.addData(data);   
+    map.addLayer(hotelesLayer);  
+  }
 });
+
+
+// $.getJSON("data/hoteles.geojson", function (data) {
+//   hoteles.addData(data);
+//   //se añade predeterminadamente al mapa
+//   map.addLayer(hotelesLayer);
+// });
 
 /* capa vacia para añadir o quitar hoteles si están/no están en la capa de clusters */
 var turismoLayer = L.geoJson(null);

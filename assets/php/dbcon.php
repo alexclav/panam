@@ -11,7 +11,8 @@
 // };
 
 function conexion(){
-	$serverName = "LAPTOP-MOEV0SMB";
+	// $serverName = "LAPTOP-MOEV0SMB";
+	$serverName = "DESKTOP-AFRETV5";
 	$connectionInfo = array(
 	    "UID" => "",
 	    "PWD" => "",
