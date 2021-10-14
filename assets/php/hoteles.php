@@ -4,7 +4,7 @@ include 'dbcon.php';
 $dbcon = conexion(); 
 // print_r($dbcon);
 // exit();
-$query = "select id, hotel, direccion, zona, x, y,huespedes,muestras,positivos,recuperados, dbo.geomToGeoJSON(geom) as geometry from Hoteles";
+$query = "select id, hotel, direccion, zona, x, y,huespedes,muestras,positivos,recuperados from Hoteles";
 // $result = odbc_exec($dbcon,$query);
 $result = sqlsrv_query($dbcon,$query);
 

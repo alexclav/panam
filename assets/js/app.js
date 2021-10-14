@@ -295,7 +295,6 @@ $.ajax({
   dataType: 'json',
   contentType: "application/json; charset=utf-8",
   success: function (data){ 
-    console.log(data); 
     hoteles.addData(data);   
     map.addLayer(hotelesLayer);  
   }
