@@ -1,5 +1,12 @@
 var map, featureList, barrioSearch = [], deportivoSearch = [], turismoSearch = [], hotelSearch = [];
 
+//remueve capa de hoteles al activar la de positivos
+$(document).change(function () {
+  if (map.hasLayer(positivosLayer)) {
+    map.removeLayer(hotelesLayer)
+  }        
+});
+
 //ejecuta función de scroll del layer control cuando se cambia el tamaño de la ventana
 $(window).resize(function() {
   sizeLayerControl();
@@ -121,6 +128,14 @@ function syncSidebar() {
     if (map.hasLayer(hotelesLayer)) {
       if (map.getBounds().contains(layer.getLatLng())) {
         $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/hotel.png"></td><td class="feature-name">' + layer.feature.properties.Hotel + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      }
+    }
+  });
+  /* Recorre la capa de  hoteles (positivos) y añade elementos que son visibles en el mapa */
+  positivos.eachLayer(function (layer) {
+    if (map.hasLayer(positivosLayer)) {
+      if (map.getBounds().contains(layer.getLatLng())) {
+        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/covid.png"></td><td class="feature-name">' + layer.feature.properties.Hotel + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       }
     }
   });
@@ -300,6 +315,47 @@ $.ajax({
   }
 });
 
+/* capa vacia para añadir o quitar hoteles si están/no están en la capa de clusters */
+var positivosLayer = L.geoJson(null);
+var positivos = L.geoJson(null, {
+  pointToLayer: function (feature, latlng) {  
+    return L.marker(latlng, {
+      icon: L.icon({
+        iconUrl: "assets/img/covid.png",
+        iconSize: [40, 50],
+        iconAnchor: [20, 55],
+        popupAnchor: [0, -25]
+      }),
+      title: feature.properties.Hotel,
+      riseOnHover: true
+    });
+  },
+  //crea la tabla para el modal del elemento y define que se muestra si se le hace clic. Tambien añade los datos para el array de busqueda
+  onEachFeature: function (feature, layer) {
+    if (feature.properties) {
+      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Hotel</th><td>" + feature.properties.Hotel + "</td></tr>" + "<tr><th>Dirección</th><td>" + feature.properties.Direccion + "</td></tr>" + "<tr><th>Zona</th><td>" + feature.properties.Zona + "</td></tr>" + "<tr><th>Huespedes</th><td>" + feature.properties.Huespedes + "<tr><th>Pruebas</th><td>" + feature.properties.Muestras + "<tr><th>Casos Positivos</th><td>" + feature.properties.Positivos + "<tr><th>Recuperados</th><td>" + feature.properties.Recuperados + "<table>";
+      layer.on({
+        click: function (e) {
+          $("#feature-title").html(feature.properties.Hotel);
+          $("#feature-info").html(content);
+          $("#featureModal").modal("show");
+          highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
+        }
+      });
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/hotel.png"></td><td class="feature-name">' + layer.feature.properties.Hotel + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+    }
+  }
+});
+
+$.ajax({  
+  url: "assets/php/positivos.php",
+  type: "get",          
+  dataType: 'json',
+  contentType: "application/json; charset=utf-8",
+  success: function (data){ 
+    positivos.addData(data);         
+  }
+});
 
 // $.getJSON("data/hoteles.geojson", function (data) {
 //   hoteles.addData(data);
@@ -373,6 +429,10 @@ map.on("overlayadd", function(e) {
     markerClusters.addLayer(turismo);
     syncSidebar();
   }
+  if (e.layer === positivosLayer) {
+    markerClusters.addLayer(positivos);
+    syncSidebar();
+  }
 });
 
 map.on("overlayremove", function(e) {
@@ -386,6 +446,10 @@ map.on("overlayremove", function(e) {
   }
   if (e.layer === turismoLayer) {
     markerClusters.removeLayer(turismo);
+    syncSidebar();
+  }
+  if (e.layer === positivosLayer) {
+    markerClusters.removeLayer(positivos);
     syncSidebar();
   }
 });
@@ -471,10 +535,12 @@ var baseLayers = {
   "Aerial Imagery": usgsImagery
 };
 
+
 //Agrupación de capas tipo punto
 var groupedOverlays = {
   "Puntos de Interés": {
     "<img src='assets/img/hotel.png' width='24' height='28'>&nbsp;Hoteles": hotelesLayer,
+    "<img src='assets/img/covid.png' width='24' height='28'>&nbsp;Casos Positivos": positivosLayer,
     "<img src='assets/img/mascota.png' width='24' height='28'>&nbsp;Escenarios": deportesLayer,
     "<img src='assets/img/sitio.png' width='24' height='28'>&nbsp;Turismo": turismoLayer
 //capas de referencia (barrios)
@@ -777,3 +843,6 @@ $.ajax({
     } 
 
   });
+
+
+
