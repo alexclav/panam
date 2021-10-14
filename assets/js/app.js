@@ -256,8 +256,8 @@ var hoteles = L.geoJson(null, {
     return L.marker(latlng, {
       icon: L.icon({
         iconUrl: hotelIcon,
-        iconSize: [24, 28],
-        iconAnchor: [12, 28],
+        iconSize: [40, 50],
+        iconAnchor: [20, 55],
         popupAnchor: [0, -25]
       }),
       title: feature.properties.Hotel,
@@ -314,8 +314,8 @@ var turismo = L.geoJson(null, {
     return L.marker(latlng, {
       icon: L.icon({
         iconUrl: "assets/img/sitio.png",
-        iconSize: [24, 28],
-        iconAnchor: [12, 28],
+        iconSize: [28, 34],
+        iconAnchor: [14, 38],
         popupAnchor: [0, -25]
       }),
       title: feature.properties.NOMBRE,
