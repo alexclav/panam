@@ -9,8 +9,23 @@ body {
 input[type="radio"], input[type="checkbox"] {
   margin: 0;
 }
+
+#juegos{
+  background-color: #C8C8C8;
+  height: 100%; 
+  width: 100%; 
+  object-fit: contain
+}
+#sec{
+  position: absolute; 
+  bottom: 0px; 
+  left: 0px;
+  z-index: 1;
+  height: 15%;
+  background-color: transparent;
+}
 #sidebar {
-  display: block;
+  display: bloc|k;
   width: 250px;
   height: 100%;
   max-width: 100%;
@@ -88,16 +103,26 @@ input[type="radio"], input[type="checkbox"] {
   font-weight: bold;
   font-size: 25px;
   color: #FFFFFF;
+  
 }
+
+.navbar-brand {
+  padding: 0px 0px;
+}
+
+
+
 .navbar-collapse.in {
   overflow-y: hidden;
 }
 .navbar-header .navbar-icon-container {
   margin-right: 15px;
+
 }
 .navbar-header .navbar-icon {
   line-height: 50px;
   height: 50px;
+
 }
 .navbar-header a.navbar-icon {
   margin-left: 25px;
