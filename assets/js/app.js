@@ -1,12 +1,5 @@
 var map, featureList, barrioSearch = [], deportivoSearch = [], turismoSearch = [], hotelSearch = [];
 
-//remueve capa de hoteles al activar la de positivos
-$(document).change(function () {
-  if (map.hasLayer(positivosLayer)) {
-    map.removeLayer(hotelesLayer)
-  }        
-});
-
 //ejecuta función de scroll del layer control cuando se cambia el tamaño de la ventana
 $(window).resize(function() {
   sizeLayerControl();
@@ -161,15 +154,23 @@ var cartoLight = L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net
   maxZoom: 19,
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>'
 });
-var usgsImagery = L.layerGroup([L.tileLayer("http://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}", {
-  maxZoom: 15,
-}), L.tileLayer.wms("http://raster.nationalmap.gov/arcgis/services/Orthoimagery/USGS_EROS_Ortho_SCALE/ImageServer/WMSServer?", {
-  minZoom: 16,
-  maxZoom: 19,
-  layers: "0",
-  format: 'image/jpeg',
-  transparent: true,
-  attribution: "Aerial Imagery courtesy USGS"
+// var usgsImagery = L.layerGroup([L.tileLayer("http://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}", {
+//   maxZoom: 15,
+// }), L.tileLayer.wms("http://raster.nationalmap.gov/arcgis/services/Orthoimagery/USGS_EROS_Ortho_SCALE/ImageServer/WMSServer?", {
+//   minZoom: 16,
+//   maxZoom: 19,
+//   layers: "0",
+//   format: 'image/jpeg',
+//   transparent: true,
+//   attribution: "Aerial Imagery courtesy USGS"
+// })]);
+
+
+
+var usgsImagery = L.layerGroup([L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3'],
+    attribution: '&copy; Google'
 })]);
 
 /* Capa de iluminacion de elemento (circulo color cyan) */
@@ -263,14 +264,9 @@ $.getJSON("data/centros.geojson", function (data) {
 var hotelesLayer = L.geoJson(null);
 var hoteles = L.geoJson(null, {
   pointToLayer: function (feature, latlng) {
-    if (feature.properties.Positivos==0) {
-      var hotelIcon="assets/img/hotel.png"
-    }else{
-      var hotelIcon="assets/img/covid.png"
-    };
     return L.marker(latlng, {
       icon: L.icon({
-        iconUrl: hotelIcon,
+        iconUrl: "assets/img/hotel.png",
         iconSize: [40, 50],
         iconAnchor: [20, 55],
         popupAnchor: [0, -25]
@@ -532,28 +528,38 @@ if (document.body.clientWidth <= 767) {
 //agrupacion de mapas base
 var baseLayers = {
   "Street Map": cartoLight,
-  "Aerial Imagery": usgsImagery
+  "Satelital": usgsImagery
 };
 
 
 //Agrupación de capas tipo punto
 var groupedOverlays = {
-  "Puntos de Interés": {
+  "Hoteles/Casos Positivos": {
     "<img src='assets/img/hotel.png' width='24' height='28'>&nbsp;Hoteles": hotelesLayer,
-    "<img src='assets/img/covid.png' width='24' height='28'>&nbsp;Casos Positivos": positivosLayer,
+    "<img src='assets/img/covid.png' width='24' height='28'>&nbsp;Casos Positivos": positivosLayer
+  },
+  "Puntos de Interés": {
+    // "<img src='assets/img/hotel.png' width='24' height='28'>&nbsp;Hoteles": hotelesLayer,
+    // "<img src='assets/img/covid.png' width='24' height='28'>&nbsp;Casos Positivos": positivosLayer,
     "<img src='assets/img/mascota.png' width='24' height='28'>&nbsp;Escenarios": deportesLayer,
     "<img src='assets/img/sitio.png' width='24' height='28'>&nbsp;Turismo": turismoLayer
-//capas de referencia (barrios)
   },
-  "Reference": {
+//capas de referencia (barrios)
+  "Referencias": {
     "Barrios": barrios    
   }
 };
 
+var options = {
+  collapsed: isCollapsed, 
+  exclusiveGroups: ["Hoteles/Casos Positivos"]
+  
+};
+
+
 //crea el control layer y lo agrega al mapa
-var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, {
-  collapsed: isCollapsed
-}).addTo(map);
+var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, options);
+map.addControl(layerControl);
 
 /* Ilumina la caja de búsqueda al hacerle clic */
 $("#searchbox").click(function () {
@@ -877,6 +883,3 @@ $.ajax({
     } 
 
   });
-
-
-
