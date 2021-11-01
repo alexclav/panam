@@ -168,9 +168,69 @@
                   </div>                   
                 </div>
               </div>
-              <div id="disclaimer" class="tab-pane fade text-danger">
-                <p>The data provided on this site is for informational and planning purposes only.</p>
-                <p>Absolutely no accuracy or completeness guarantee is implied or intended. All information on this map is subject to such variations and corrections as might result from a complete title search and/or accurate field survey.</p>
+              <div id="disclaimer" class="tab-pane fade">
+                <div class="container" style="width: 100%;"> 
+
+                  <div class="row" style="margin-top: 5px;">
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2" style="position: relative;">
+                      <button style="position: absolute; right: 0px" id="subDay"><i class="fas fa-arrow-left"></i></button>       
+                    </div>  
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                      <input type="date" class="form-control" id="date" value="2021-11-21" min="2021-11-21" max="2021-12-06">
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style="position: relative;">
+                      <button style="position: absolute; left: 0px" id="addDay"><i class="fas fa-arrow-right"></i></button>       
+                    </div>          
+                  </div>  
+                  
+                  <div class="row" style="text-align: center;">
+                    <table id="tabla" class="table table-bordered table-condensed table-responsive">
+                      <thead>
+                        <tr>
+                          <th style="text-align: center;">Hotel</th>
+                          <th style="text-align: center;">Pruebas Programadas</th>
+                          <th style="text-align: center;">Equipos necesarios</th>
+                          <th style="text-align: center;">Indicador</th>                        
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr id="1" class="success">                     
+                        </tr>
+                        <tr id="2">         
+                        </tr>
+                        <tr id="3">         
+                        </tr>
+                        <tr id="4">         
+                        </tr>
+                        <tr id="5">       
+                        </tr>
+                        <tr id="6">     
+                        </tr>
+                        <tr id="7">       
+                        </tr>
+                        <tr id="8">     
+                        </tr>
+                        <tr id="9">         
+                        </tr>
+                        <tr id="10">          
+                        </tr>
+                        <tr id="11">        
+                        </tr>
+                        <tr id="12">        
+                        </tr>
+                        <tr id="13">          
+                        </tr>
+                        <tr id="14">          
+                        </tr>
+                        <tr id="15">          
+                        </tr>
+                        <tr id="16">        
+                        </tr>
+                      </tbody>
+                    </table>      
+                  </div>
+                    
+                </div>
               </div>
               <div class="tab-pane fade" id="contact">
                 <form id="contact-form">
@@ -328,5 +388,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js" integrity="sha256-J2sc79NPV/osLcIpzL3K8uJyAD7T5gaEFKlLDM18oxY=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js" integrity="sha256-CfcERD4Ov4+lKbWbYqXD6aFM9M51gN4GUEtDhkWABMo=" crossorigin="anonymous"></script>
     <script src="assets/js/app.js"></script>
+    <script src="assets/js/table.js"></script>
   </body>
 </html>
