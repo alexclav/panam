@@ -1,14 +1,14 @@
 <?php
 	
-  include('conexion.php');
+  include('dbcon.php');
   $cdb = conexion();	
 
   $date= $_POST['date'];
 
 	$sql = "select * from pruebas where fecha='$date'";
-	$resultado = pg_query($cdb, $sql);	
+	$resultado = sqlsrv_query($cdb, $sql);	
   
-	while($row = pg_fetch_array($resultado)){
+	while($row = sqlsrv_fetch_array($resultado)){
  	  $return_arr[]= array( 	 		
 		"torre_de_cali" => $row['torre_de_cali'],
     "spiwak" => $row['spiwak'],
