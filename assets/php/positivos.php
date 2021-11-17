@@ -4,7 +4,7 @@ include 'dbcon.php';
 $dbcon = conexion(); 
 // print_r($dbcon);
 // exit();
-$query = "select id, hotel, direccion, zona, x, y,huespedes,muestras,positivos,recuperados from Hoteles where positivos>0";
+$query = "select id, hotel, direccion, zona, x, y,huespedes,muestras,positivos,recuperados,capacidad from Hoteles where positivos>0";
 // $result = odbc_exec($dbcon,$query);
 $result = sqlsrv_query($dbcon,$query);
 
@@ -22,7 +22,8 @@ while($row = sqlsrv_fetch_array($result)) {
 			"Huespedes" => $row['huespedes'],
 			"Muestras" => $row['muestras'],
 			"Positivos" => $row['positivos'],
-			"Recuperados" => $row['recuperados']
+            "Recuperados" => $row['recuperados'],
+            "Capacidad" => $row['capacidad']
         ),
         'geometry' => array(
             'type' => 'Point',

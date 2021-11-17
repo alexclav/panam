@@ -278,7 +278,7 @@ var hoteles = L.geoJson(null, {
   //crea la tabla para el modal del elemento y define que se muestra si se le hace clic. Tambien añade los datos para el array de busqueda
   onEachFeature: function (feature, layer) {
     if (feature.properties) {
-      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Hotel</th><td>" + feature.properties.Hotel + "</td></tr>" + "<tr><th>Dirección</th><td>" + feature.properties.Direccion + "</td></tr>" + "<tr><th>Zona</th><td>" + feature.properties.Zona + "</td></tr>" + "<tr><th>Huespedes</th><td>" + feature.properties.Huespedes + "<tr><th>Pruebas</th><td>" + feature.properties.Muestras + "<tr><th>Casos Positivos</th><td>" + feature.properties.Positivos + "<tr><th>Recuperados</th><td>" + feature.properties.Recuperados + "<table>";
+      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Hotel</th><td>" + feature.properties.Hotel + "</td></tr>" + "<tr><th>Dirección</th><td>" + feature.properties.Direccion + "</td></tr>" + "<tr><th>Zona</th><td>" + feature.properties.Zona + "</td></tr>" + "<tr><th>Huespedes</th><td>" + feature.properties.Huespedes + "<tr><th>Pruebas</th><td>" + feature.properties.Muestras + "<tr><th>Casos Positivos</th><td>" + feature.properties.Positivos + "<tr><th>Recuperados</th><td>" + feature.properties.Recuperados + "<tr><th>Capacidad</th><td>" + feature.properties.Capacidad + "<table>";
       layer.on({
         click: function (e) {
           $("#feature-title").html(feature.properties.Hotel);
@@ -329,7 +329,7 @@ var positivos = L.geoJson(null, {
   //crea la tabla para el modal del elemento y define que se muestra si se le hace clic. Tambien añade los datos para el array de busqueda
   onEachFeature: function (feature, layer) {
     if (feature.properties) {
-      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Hotel</th><td>" + feature.properties.Hotel + "</td></tr>" + "<tr><th>Dirección</th><td>" + feature.properties.Direccion + "</td></tr>" + "<tr><th>Zona</th><td>" + feature.properties.Zona + "</td></tr>" + "<tr><th>Huespedes</th><td>" + feature.properties.Huespedes + "<tr><th>Pruebas</th><td>" + feature.properties.Muestras + "<tr><th>Casos Positivos</th><td>" + feature.properties.Positivos + "<tr><th>Recuperados</th><td>" + feature.properties.Recuperados + "<table>";
+      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Hotel</th><td>" + feature.properties.Hotel + "</td></tr>" + "<tr><th>Dirección</th><td>" + feature.properties.Direccion + "</td></tr>" + "<tr><th>Zona</th><td>" + feature.properties.Zona + "</td></tr>" + "<tr><th>Huespedes</th><td>" + feature.properties.Huespedes + "<tr><th>Pruebas</th><td>" + feature.properties.Muestras + "<tr><th>Casos Positivos</th><td>" + feature.properties.Positivos + "<tr><th>Recuperados</th><td>" + feature.properties.Recuperados + "<tr><th>Capacidad</th><td>" + feature.properties.Capacidad + "<table>";
       layer.on({
         click: function (e) {
           $("#feature-title").html(feature.properties.Hotel);
