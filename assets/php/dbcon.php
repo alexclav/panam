@@ -16,7 +16,8 @@ function conexion(){
 	$connectionInfo = array(
 	    "UID" => "",
 	    "PWD" => "",
-	    "Database" => "Panam"
+		"Database" => "Panam",
+		"CharacterSet" => "UTF-8"
 	);
 	$conn = sqlsrv_connect($serverName, $connectionInfo);
 	if ($conn === false) {		
